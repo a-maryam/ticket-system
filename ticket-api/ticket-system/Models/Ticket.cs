@@ -8,7 +8,7 @@ public class Ticket
     public TicketStatus Status { get; set; }
     public string Description { get; set; }
 
-    public User Creator { get; set; }
+    public User? Creator { get; set; }
     public int CreatorId { get; set; }
 
     public User? Assignee { get; set; }
