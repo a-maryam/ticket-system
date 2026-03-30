@@ -3,6 +3,7 @@ namespace ticket_system.Models;
 public class User 
 {
     public int Id { get; set; }
-    public string? Name { get; set; } = string.Empty();
+    public string Name { get; set; } = string.Empty;
     public ICollection<Board> Boards { get; set; } = new List<Board>();
+    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }
