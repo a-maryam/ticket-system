@@ -1,6 +1,7 @@
-# ticket-system
-In-progress icketing web app with Jira-like functionality
-[Design doc](./Design.md)
+# Ticketing System
+In-progress ticketing web app with Jira-like functionality
+
+## [Design doc](./Design.md)
 
 ## Tech: .NET 10, ASP.NET Core, C#, Entity Framework
 
