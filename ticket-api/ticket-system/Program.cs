@@ -8,6 +8,10 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// set up database later
+// builder.Services.AddDbContext<AppDbContext>(options =>
+//   options.UseSqlServer("connection-string"));
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

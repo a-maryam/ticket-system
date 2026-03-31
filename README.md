@@ -7,4 +7,5 @@ In-progress ticketing web app with Jira-like functionality
 
 ## Dev Log
 - Wrote models for ticket, user, board, comment, with foreign keys
-- Next: ticket needs to refer to comments, set up controllers/create ticket api 
+- Wrote TicketController, Ticket Dto, AppDbContext
+- Next: finish setting up ticket api and configurations; then test with postman.
