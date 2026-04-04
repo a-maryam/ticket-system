@@ -12,5 +12,23 @@ namespace ticket_system.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Comment> Comments { get; set; }
+
+        // have to prevent cascading deletes
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<Ticket>()
+                .HasOne(t => t.Creator)
+                .WithMany() // can put something here if collection added later
+                .HasForeignKey(t => t.CreatorId)
+                .OnDelete(Microsoft.EntityFrameworkCore.DeleteBehavior.NoAction);
+
+            modelBuilder
+                .Entity<Ticket>()
+                .HasOne(t => t.Assignee)
+                .WithMany()
+                .HasForeignKey(t => t.AssigneeId)
+                .OnDelete(Microsoft.EntityFrameworkCore.DeleteBehavior.NoAction);
+        }
     }
 }
