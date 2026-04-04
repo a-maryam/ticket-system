@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ticket_system.Dtos;
+using ticket_system.Services;
 
 namespace ticket_system.Controllers
 {
@@ -7,21 +8,31 @@ namespace ticket_system.Controllers
     [Route("[controller]")]
     public class TicketController : ControllerBase
     {
-       [HttpPost]
-       public async Task<IActionResult> CreateTicket(CreateTicketDto dto) {
-        var ticket = new Ticket 
+        private readonly TicketService _ticketService;
+
+        public TicketController(TicketService ticketService)
         {
-            Title = dto.Title,
-            Description = dto.Description,
-            Status = TicketStatus.Open
-        };
+            _ticketService = ticketService;
+        }
 
-        _context.Tickets.Add(ticket);
+        [HttpPost]
+        public async Task<IActionResult> CreateTicket(CreateTicketDto dto)
+        {
+            var ticket = await _ticketService.CreateTicket(dto);
+            return CreatedAtAction(nameof(GetTicketById), new { id = ticket.Id }, ticket);
+        }
 
-        // persist changes
-        await _context.SaveChangesAsync();
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTicketById(int id)
+        {
+            var ticket = await _ticketService.GetTicketById(id);
 
-        return ticket;
-       }
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(ticket);
+        }
     }
 }

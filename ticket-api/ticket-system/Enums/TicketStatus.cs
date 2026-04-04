@@ -1,9 +1,9 @@
 namespace ticket_system.Enums;
 
-public enum TicketStatus 
+public enum TicketStatus
 {
     ToDo,
     InProgress,
     Done,
-    Blocked
+    Blocked,
 }

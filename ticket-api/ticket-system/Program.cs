@@ -1,18 +1,23 @@
+using Microsoft.EntityFrameworkCore;
+using ticket_system.Data;
+using ticket_system.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddScoped<TicketService>(); // create ticket service whenever requested
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
+
+// set up database later
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
 var app = builder.Build();
 
-// set up database later
-// builder.Services.AddDbContext<AppDbContext>(options =>
-//   options.UseSqlServer("connection-string"));
-
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipelineS.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
