@@ -2,15 +2,17 @@ using Microsoft.EntityFrameworkCore;
 using ticket_system.Data;
 using ticket_system.Services;
 
+// initialization: kestrel, logging, config
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<TicketService>(); // create ticket service whenever requested
+
+// Dependencies
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
 
-// set up database later
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
@@ -23,6 +25,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+// Middleware
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

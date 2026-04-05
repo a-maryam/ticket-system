@@ -10,7 +10,7 @@ namespace ticket_system.Data
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
             optionsBuilder.UseSqlServer(
-                "Data Source=COLOSSUS;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=True;Application Name=\"SQL Server Management Studio\";Command Timeout=0"
+                "Data Source=COLOSSUS;Database=TicketSystemDb;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=True;Application Name=\"SQL Server Management Studio\";Command Timeout=0"
             );
 
             return new AppDbContext(optionsBuilder.Options);
