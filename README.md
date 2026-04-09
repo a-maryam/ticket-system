@@ -16,4 +16,5 @@ In-progress ticketing web app with Jira-like functionality
 - Added AppDbContextFactory so Entity Framework can connect with the MS SQL Server for local testing
 - create ticket api, controllers and service set up. 
 - fixed cascading deletes 
-- Next: Write board creation logic / ticket flow. Board requires ticket.
+- wrote board creation logic for creating new ticket (either existing board or new one)
+- Next: Write ticket and board dto, check on creator id fk
