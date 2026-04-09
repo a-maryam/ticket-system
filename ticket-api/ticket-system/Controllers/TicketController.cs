@@ -3,7 +3,7 @@ using ticket_system.Dtos;
 using ticket_system.Services;
 
 namespace ticket_system.Controllers
-{
+{ // add board not exists check
     [ApiController]
     [Route("[controller]")]
     public class TicketController : ControllerBase

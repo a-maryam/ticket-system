@@ -12,6 +12,7 @@ namespace ticket_system.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Board> Boards { get; set; }
 
         // have to prevent cascading deletes
         protected override void OnModelCreating(ModelBuilder modelBuilder)

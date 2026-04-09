@@ -16,14 +16,36 @@ namespace ticket_system.Services
 
         public async Task<Ticket> CreateTicket(CreateTicketDto dto)
         {
+            int boardId;
+
+            if (dto.BoardId.HasValue)
+            {
+                boardId = dto.BoardId.Value;
+            }
+            else if (!string.IsNullOrEmpty(dto.NewBoardName))
+            {
+                var board = new Board
+                {
+                    Name = dto.NewBoardName,
+                    OwnerId = 1, //temp
+                };
+                _context.Boards.Add(board);
+                await _context.SaveChangesAsync();
+                boardId = board.Id;
+            }
+            else
+            {
+                throw new Exception("Either BoardId or NewBoardName required.");
+            }
+
             var ticket = new Ticket
             {
                 Title = dto.Title,
                 Description = dto.Description,
-                Status = TicketStatus.ToDo,
+                Status = dto.Status ?? TicketStatus.ToDo,
                 //Creator = ,
                 CreatorId = 1, //temporary
-                BoardId = 1,
+                BoardId = boardId,
             };
 
             _context.Tickets.Add(ticket);
