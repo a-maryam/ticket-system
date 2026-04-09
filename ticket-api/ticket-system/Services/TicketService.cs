@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ticket_system.Data;
 using ticket_system.Dtos;
 using ticket_system.Enums;
@@ -14,12 +15,16 @@ namespace ticket_system.Services
             _context = context;
         }
 
-        public async Task<Ticket> CreateTicket(CreateTicketDto dto)
+        public async Task<TicketDto> CreateTicket(CreateTicketDto dto)
         {
             int boardId;
 
             if (dto.BoardId.HasValue)
             {
+                var exists = await _context.Boards.AnyAsync(b => b.Id == dto.BoardId.Value);
+                if (!exists)
+                    throw new Exception("Board not found.");
+
                 boardId = dto.BoardId.Value;
             }
             else if (!string.IsNullOrEmpty(dto.NewBoardName))
@@ -51,14 +56,58 @@ namespace ticket_system.Services
             _context.Tickets.Add(ticket);
             // persist changes
             await _context.SaveChangesAsync();
-            return ticket;
+            return new TicketDto
+            {
+                Id = ticket.Id,
+                Title = ticket.Title,
+                Description = ticket.Description,
+                BoardId = ticket.BoardId,
+                Status = ticket.Status,
+            };
         }
 
         public void AssignTicket(int ticketId, int userId) { }
 
-        public async Task<Ticket?> GetTicketById(int id)
+        public async Task<TicketDto?> GetTicketById(int id)
         {
-            return await _context.Tickets.FindAsync(id);
+            var ticket = await _context.Tickets.FindAsync(id);
+            if (ticket == null)
+                return null;
+
+            return new TicketDto
+            {
+                Id = ticket.Id,
+                Title = ticket.Title,
+                Description = ticket.Description,
+                BoardId = ticket.BoardId,
+                Status = ticket.Status,
+            };
+        }
+
+        public async Task<BoardDto?> GetBoardById(int id)
+        {
+            var board = await _context
+                .Boards.Include(b => b.Tickets)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (board == null)
+                return null;
+
+            return new BoardDto
+            {
+                Id = board.Id,
+                Name = board.Name,
+                Tickets = board
+                    .Tickets.Select(t => new TicketDto
+                    {
+                        Id = t.Id,
+                        Title = t.Title,
+                        Description = t.Description,
+                        BoardId = t.BoardId,
+                        Status = t.Status,
+                    })
+                    .ToList(),
+            };
         }
     }
 }
