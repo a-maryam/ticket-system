@@ -34,5 +34,12 @@ namespace ticket_system.Controllers
 
             return Ok(ticket);
         }
+
+        [HttpPut("{id}/assign")]
+        public async Task<IActionResult> AssignTicket(int id, AssignTicketDto dto)
+        {
+            await _ticketService.AssignTicket(id, dto);
+            return Ok();
+        }
     }
 }

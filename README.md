@@ -3,6 +3,9 @@ In-progress ticketing web app with Jira-like functionality
 
 ## [Design doc](./Design.md)
 
+## Demo: Ticket API in Postman 
+![Ticket API](./demo_images/create_ticket_request.png)
+
 ## Tech
 - ASP.NET Core 10, C#, Entity Framework Core + Fluid API, MS SQL Server + Postman for Local Testing
 - Frontend: Likely React
@@ -17,4 +20,5 @@ In-progress ticketing web app with Jira-like functionality
 - create ticket api, controllers and service set up. 
 - fixed cascading deletes 
 - wrote board creation logic for creating new ticket (either existing board or new one)
-- Next: Write ticket and board dto, check on creator id fk
+- wrote ticket + board dtos
+- added dummy user to appdbcontext for flow to work initially

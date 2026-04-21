@@ -30,6 +30,15 @@ namespace ticket_system.Data
                 .WithMany()
                 .HasForeignKey(t => t.AssigneeId)
                 .OnDelete(Microsoft.EntityFrameworkCore.DeleteBehavior.NoAction);
+
+            // for scaffolding
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = 1,
+                    Name = "Admin"
+                }
+                );
         }
     }
 }

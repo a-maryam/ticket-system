@@ -10,8 +10,7 @@ builder.Services.AddScoped<TicketService>(); // create ticket service whenever r
 
 // Dependencies
 builder
-    .Services
-    .AddControllers()
+    .Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(

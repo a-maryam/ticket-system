@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ticket_system.Data;
 using ticket_system.Dtos;
@@ -21,21 +23,36 @@ namespace ticket_system.Services
 
             if (dto.BoardId.HasValue)
             {
-                var exists = await _context.Boards.AnyAsync(b => b.Id == dto.BoardId.Value);
-                if (!exists)
-                    throw new Exception("Board not found.");
+                var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == dto.BoardId.Value);
+                if (board != null)
+                {
+                    boardId = board.Id;
+                }
+                else
+                {
+                    var newBoard = new Board
+                    {
+                        Name = dto.NewBoardName ?? "Default Board",
+                        OwnerId = 1,
+                    };
 
-                boardId = dto.BoardId.Value;
+                    _context.Boards.Add(newBoard);
+                    await _context.SaveChangesAsync();
+
+                    boardId = newBoard.Id;
+                }
             }
             else if (!string.IsNullOrEmpty(dto.NewBoardName))
             {
                 var board = new Board
                 {
                     Name = dto.NewBoardName,
-                    OwnerId = 1, //temp
+                    OwnerId = 1,
                 };
+
                 _context.Boards.Add(board);
                 await _context.SaveChangesAsync();
+
                 boardId = board.Id;
             }
             else
@@ -48,14 +65,14 @@ namespace ticket_system.Services
                 Title = dto.Title,
                 Description = dto.Description,
                 Status = dto.Status ?? TicketStatus.ToDo,
-                //Creator = ,
-                CreatorId = 1, //temporary
+                CreatorId = 1,
                 BoardId = boardId,
             };
 
             _context.Tickets.Add(ticket);
             // persist changes
             await _context.SaveChangesAsync();
+
             return new TicketDto
             {
                 Id = ticket.Id,
@@ -66,7 +83,21 @@ namespace ticket_system.Services
             };
         }
 
-        public void AssignTicket(int ticketId, int userId) { }
+
+        public async Task AssignTicket(int ticketId, AssignTicketDto dto)
+        {
+            var ticket = await _context.Tickets.FindAsync(ticketId);
+            var user = await _context.Users.FindAsync(dto.AssigneeId);
+
+            if (ticket == null)
+                throw new Exception("Ticket not found.");
+            if (user == null)
+                throw new Exception("User not found");
+
+            ticket.AssigneeId = user.Id;
+
+            await _context.SaveChangesAsync();
+        }
 
         public async Task<TicketDto?> GetTicketById(int id)
         {
@@ -81,6 +112,7 @@ namespace ticket_system.Services
                 Description = ticket.Description,
                 BoardId = ticket.BoardId,
                 Status = ticket.Status,
+                AssigneeId = ticket.AssigneeId,
             };
         }
 
