@@ -39,7 +39,14 @@ namespace ticket_system.Controllers
         public async Task<IActionResult> AssignTicket(int id, AssignTicketDto dto)
         {
             await _ticketService.AssignTicket(id, dto);
-            return Ok();
+            var ticket = await _ticketService.GetTicketById(id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(ticket);
         }
     }
 }

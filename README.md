@@ -22,3 +22,8 @@ In-progress ticketing web app with Jira-like functionality
 - wrote board creation logic for creating new ticket (either existing board or new one)
 - wrote ticket + board dtos
 - added dummy user to appdbcontext for flow to work initially
+- assign ticket endpoint works
+- wrote get, create board, works in conjunction with create ticket + assign ticket
+
+## Bugs + Pitfalls
+- cyclical Json

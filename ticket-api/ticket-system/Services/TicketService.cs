@@ -23,7 +23,9 @@ namespace ticket_system.Services
 
             if (dto.BoardId.HasValue)
             {
-                var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == dto.BoardId.Value);
+                var board = await _context.Boards.FirstOrDefaultAsync(b =>
+                    b.Id == dto.BoardId.Value
+                );
                 if (board != null)
                 {
                     boardId = board.Id;
@@ -44,11 +46,7 @@ namespace ticket_system.Services
             }
             else if (!string.IsNullOrEmpty(dto.NewBoardName))
             {
-                var board = new Board
-                {
-                    Name = dto.NewBoardName,
-                    OwnerId = 1,
-                };
+                var board = new Board { Name = dto.NewBoardName, OwnerId = 1 };
 
                 _context.Boards.Add(board);
                 await _context.SaveChangesAsync();
@@ -83,7 +81,6 @@ namespace ticket_system.Services
             };
         }
 
-
         public async Task AssignTicket(int ticketId, AssignTicketDto dto)
         {
             var ticket = await _context.Tickets.FindAsync(ticketId);
@@ -116,30 +113,18 @@ namespace ticket_system.Services
             };
         }
 
-        public async Task<BoardDto?> GetBoardById(int id)
+        public async Task<Board> CreateBoard(CreateBoardDto dto)
         {
-            var board = await _context
-                .Boards.Include(b => b.Tickets)
-                .FirstOrDefaultAsync(b => b.Id == id);
+            var userExists = await _context.Users.AnyAsync(u => u.Id == dto.OwnerId);
 
-            if (board == null)
-                return null;
+            if(!userExists) throw new Exception("Owner not found");
 
-            return new BoardDto
-            {
-                Id = board.Id,
-                Name = board.Name,
-                Tickets = board
-                    .Tickets.Select(t => new TicketDto
-                    {
-                        Id = t.Id,
-                        Title = t.Title,
-                        Description = t.Description,
-                        BoardId = t.BoardId,
-                        Status = t.Status,
-                    })
-                    .ToList(),
-            };
+            var board = new Board { Name = dto.Name, OwnerId = dto.OwnerId };
+
+            _context.Boards.Add(board);
+            await _context.SaveChangesAsync();
+
+            return board;
         }
     }
 }

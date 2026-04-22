@@ -1,4 +1,5 @@
 using ticket_system.Enums;
+
 public class TicketDto
 {
     public int Id { get; set; }
