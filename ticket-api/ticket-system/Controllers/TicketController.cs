@@ -27,12 +27,7 @@ namespace ticket_system.Controllers
         {
             var ticket = await _ticketService.GetTicketById(id);
 
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(ticket);
+            return ticket == null ? NotFound() : Ok(ticket);
         }
 
         [HttpPut("{id}/assign")]
@@ -41,12 +36,14 @@ namespace ticket_system.Controllers
             await _ticketService.AssignTicket(id, dto);
             var ticket = await _ticketService.GetTicketById(id);
 
-            if (ticket == null)
-            {
-                return NotFound();
-            }
+            return ticket == null ? NotFound() : Ok(ticket);
+        }
 
-            return Ok(ticket);
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> ChangeTicketStatus(int id, ChangeTicketStatusDto dto)
+        {
+            var ticket = await _ticketService.ChangeTicketStatus(id, dto);
+            return ticket == null ? NotFound() : Ok(ticket);
         }
     }
 }

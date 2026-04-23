@@ -68,7 +68,7 @@ namespace ticket_system.Services
             };
 
             _context.Tickets.Add(ticket);
-            // persist changes
+
             await _context.SaveChangesAsync();
 
             return new TicketDto
@@ -113,18 +113,24 @@ namespace ticket_system.Services
             };
         }
 
-        public async Task<Board> CreateBoard(CreateBoardDto dto)
+        public async Task<TicketDto?> ChangeTicketStatus(int id, ChangeTicketStatusDto dto)
         {
-            var userExists = await _context.Users.AnyAsync(u => u.Id == dto.OwnerId);
-
-            if(!userExists) throw new Exception("Owner not found");
-
-            var board = new Board { Name = dto.Name, OwnerId = dto.OwnerId };
-
-            _context.Boards.Add(board);
-            await _context.SaveChangesAsync();
-
-            return board;
+            var ticket = await _context.Tickets.FindAsync(id);
+            if (ticket == null)
+            {
+                return null;
+            }
+            ticket.Status = dto.Status;
+            _ = await _context.SaveChangesAsync();
+            return new TicketDto
+            {
+                Id = ticket.Id,
+                Title = ticket.Title,
+                Description = ticket.Description,
+                BoardId = ticket.BoardId,
+                Status = ticket.Status,
+                AssigneeId = ticket.AssigneeId,
+            };
         }
     }
 }
