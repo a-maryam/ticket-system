@@ -24,6 +24,6 @@ In-progress ticketing web app with Jira-like functionality
 - added dummy user to appdbcontext for flow to work initially
 - assign ticket endpoint works
 - wrote get, create board, works in conjunction with create ticket + assign ticket
-
-## Bugs + Pitfalls
-- cyclical Json
+- wrote change ticket status endpoint
+- wrote column model
+- next: adjust board and ticket for column
