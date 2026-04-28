@@ -26,4 +26,9 @@ In-progress ticketing web app with Jira-like functionality
 - wrote get, create board, works in conjunction with create ticket + assign ticket
 - wrote change ticket status endpoint
 - wrote column model
-- next: adjust board and ticket for column
+- adjusted ticket service for column 
+- next: adjust board service for column, write column service
+- further todos: write comment service, move tickets between columns, rules for life cycle, move into UI
+
+## Planned/Ideas
+- for UX, add a flow where a ticket can be created concurrently with ticket (had to remove option when adding column to flow)
