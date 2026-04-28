@@ -23,6 +23,12 @@ public class Ticket
     public Board? AssignedBoard { get; set; }
 
     public int BoardId { get; set; }
-    
+
     public int Position { get; set; } // position within column
+
+    public required int ColumnId { get; set; }
+
+    public Column? Column { get; set; }
+
+    public ICollection<Comment> Comments = new List<Comment>();
 }
