@@ -10,7 +10,7 @@ namespace ticket_system.Data
 
         // EF Core Tables
         public DbSet<User> Users { get; set; }
-        
+
         public DbSet<Ticket> Tickets { get; set; }
 
         public DbSet<Comment> Comments { get; set; }
@@ -55,9 +55,16 @@ namespace ticket_system.Data
                 .HasOne(t => t.Column)
                 .WithMany(c => c.Tickets)
                 .HasForeignKey(t => t.ColumnId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
-             // should column delete cascade or be restricted
+            _ = modelBuilder
+                .Entity<Comment>()
+                .HasOne(c => c.Author)
+                .WithMany(u => u.Comments)
+                .HasForeignKey(c => c.AuthorId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // should column delete cascade or be restricted
 
             _ = modelBuilder.Entity<User>().HasData(new User { Id = 1, Name = "Admin" });
         }
