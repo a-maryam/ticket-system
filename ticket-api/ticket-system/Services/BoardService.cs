@@ -22,7 +22,17 @@ namespace ticket_system.Services
             if (!userExists)
                 throw new Exception("Owner not found");
 
-            var board = new Board { Name = dto.Name, OwnerId = dto.OwnerId };
+            var board = new Board
+            {
+                Name = dto.Name,
+                OwnerId = dto.OwnerId,
+                Columns = new List<Column>
+                {
+                    new Column { Name = "To Do", Position = 0 },
+                    new Column { Name = "In Progress", Position = 1 },
+                    new Column { Name = "Done", Position = 2 },
+                },
+            };
 
             _context.Boards.Add(board);
             await _context.SaveChangesAsync();
@@ -33,27 +43,34 @@ namespace ticket_system.Services
         public async Task<BoardDto?> GetBoardById(int id)
         {
             var board = await _context
-                .Boards.Include(b => b.Tickets)
-                .FirstOrDefaultAsync(b => b.Id == id);
+                .Boards.Where(b => b.Id == id)
+                .Select(b => new BoardDto
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    Columns = b
+                        .Columns.OrderBy(c => c.Position)
+                        .Select(c => new ColumnDto
+                        {
+                            Id = c.Id,
+                            Name = c.Name,
+                            Tickets = c
+                                .Tickets.OrderBy(t => t.Position)
+                                .Select(t => new TicketDto
+                                {
+                                    Id = t.Id,
+                                    Title = t.Title,
+                                    CreatorId = t.CreatorId,
+                                    Position = t.Position,
+                                    ColumnId = t.ColumnId,
+                                })
+                                .ToList(),
+                        })
+                        .ToList(),
+                })
+                .FirstOrDefaultAsync();
 
-            if (board == null)
-                return null;
-
-            return new BoardDto
-            {
-                Id = board.Id,
-                Name = board.Name,
-                Tickets = board
-                    .Tickets.Select(t => new TicketDto
-                    {
-                        Id = t.Id,
-                        Title = t.Title,
-                        Description = t.Description,
-                        BoardId = t.BoardId,
-                        Status = t.Status,
-                    })
-                    .ToList(),
-            };
+            return board;
         }
     }
 }

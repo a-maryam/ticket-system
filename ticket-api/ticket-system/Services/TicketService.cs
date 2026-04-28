@@ -17,54 +17,29 @@ namespace ticket_system.Services
             _context = context;
         }
 
+        // check that this is correct
         public async Task<TicketDto> CreateTicket(CreateTicketDto dto)
         {
-            int boardId;
+            var column = await _context
+                .Columns.Include(c => c.Tickets)
+                .FirstOrDefaultAsync(c => c.Id == dto.ColumnId);
 
-            if (dto.BoardId.HasValue)
-            {
-                var board = await _context.Boards.FirstOrDefaultAsync(b =>
-                    b.Id == dto.BoardId.Value
-                );
-                if (board != null)
-                {
-                    boardId = board.Id;
-                }
-                else
-                {
-                    var newBoard = new Board
-                    {
-                        Name = dto.NewBoardName ?? "Default Board",
-                        OwnerId = 1,
-                    };
+            if (column == null)
+                throw new Exception("Column not found.");
 
-                    _context.Boards.Add(newBoard);
-                    await _context.SaveChangesAsync();
-
-                    boardId = newBoard.Id;
-                }
-            }
-            else if (!string.IsNullOrEmpty(dto.NewBoardName))
-            {
-                var board = new Board { Name = dto.NewBoardName, OwnerId = 1 };
-
-                _context.Boards.Add(board);
-                await _context.SaveChangesAsync();
-
-                boardId = board.Id;
-            }
-            else
-            {
-                throw new Exception("Either BoardId or NewBoardName required.");
-            }
+            var position = await _context
+                .Tickets.Where(t => t.ColumnId == dto.ColumnId)
+                .CountAsync();
 
             var ticket = new Ticket
             {
                 Title = dto.Title,
                 Description = dto.Description,
                 Status = dto.Status ?? TicketStatus.ToDo,
-                CreatorId = 1,
-                BoardId = boardId,
+                CreatorId = 1, // change later
+                ColumnId = column.Id,
+                Column = column,
+                Position = position,
             };
 
             _context.Tickets.Add(ticket);
@@ -76,8 +51,10 @@ namespace ticket_system.Services
                 Id = ticket.Id,
                 Title = ticket.Title,
                 Description = ticket.Description,
-                BoardId = ticket.BoardId,
+                ColumnId = ticket.ColumnId,
                 Status = ticket.Status,
+                CreatorId = ticket.CreatorId,
+                Position = ticket.Position,
             };
         }
 
@@ -107,9 +84,10 @@ namespace ticket_system.Services
                 Id = ticket.Id,
                 Title = ticket.Title,
                 Description = ticket.Description,
-                BoardId = ticket.BoardId,
+                ColumnId = ticket.ColumnId,
                 Status = ticket.Status,
-                AssigneeId = ticket.AssigneeId,
+                CreatorId = ticket.CreatorId,
+                Position = ticket.Position,
             };
         }
 
@@ -120,16 +98,19 @@ namespace ticket_system.Services
             {
                 return null;
             }
+
             ticket.Status = dto.Status;
             _ = await _context.SaveChangesAsync();
+
             return new TicketDto
             {
                 Id = ticket.Id,
                 Title = ticket.Title,
                 Description = ticket.Description,
-                BoardId = ticket.BoardId,
+                ColumnId = ticket.ColumnId,
                 Status = ticket.Status,
-                AssigneeId = ticket.AssigneeId,
+                CreatorId = ticket.CreatorId,
+                Position = ticket.Position,
             };
         }
     }
