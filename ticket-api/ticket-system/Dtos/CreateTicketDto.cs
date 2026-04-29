@@ -9,7 +9,10 @@ namespace ticket_system.Dtos
         public required string Title { get; set; }
 
         public required string Description { get; set; }
-        public required int ColumnId { get; set; }
+
+        public required int BoardId { get; set; }
+
+        public required string ColumnName { get; set; }
 
         public string? NewBoardName { get; set; }
 

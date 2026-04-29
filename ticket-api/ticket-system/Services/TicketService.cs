@@ -20,16 +20,14 @@ namespace ticket_system.Services
         // check that this is correct
         public async Task<TicketDto> CreateTicket(CreateTicketDto dto)
         {
-            var column = await _context
-                .Columns.Include(c => c.Tickets)
-                .FirstOrDefaultAsync(c => c.Id == dto.ColumnId);
+            var column = await _context.Columns.FirstOrDefaultAsync(c =>
+                c.BoardId == dto.BoardId && c.Name == dto.ColumnName
+            );
 
             if (column == null)
                 throw new Exception("Column not found.");
 
-            var position = await _context
-                .Tickets.Where(t => t.ColumnId == dto.ColumnId)
-                .CountAsync();
+            var position = await _context.Tickets.Where(t => t.ColumnId == column.Id).CountAsync();
 
             var ticket = new Ticket
             {
@@ -39,6 +37,7 @@ namespace ticket_system.Services
                 CreatorId = 1, // change later
                 ColumnId = column.Id,
                 Column = column,
+                BoardId = column.BoardId,
                 Position = position,
             };
 
