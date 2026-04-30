@@ -3,7 +3,7 @@ using ticket_system.Dtos;
 using ticket_system.Services;
 
 namespace ticket_system.Controllers
-{ 
+{
     [ApiController]
     [Route("[controller]")]
     public class ColumnController : ControllerBase
@@ -18,14 +18,38 @@ namespace ticket_system.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateColumn(CreateColumnDto dto)
         {
-            
+            var column = await _columnService.CreateColumn(dto);
+            if (column == null)
+                return NotFound();
+            return Ok(column);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetColumnsByBoard()
+        [HttpGet("columns/{boardId}")]
+        public async Task<IActionResult> GetColumnsByBoard(int boardId)
+        {
+            var columns = await _columnService.GetColumnsByBoard(boardId);
+
+            if (columns == null)
+                return NotFound();
+
+            return Ok(columns);
+        }
+
+        [HttpPut("/updatename/{columnId}")]
+        public async Task<IActionResult> UpdateColumnName(int columnId, UpdateColumnName dto)
+        {
+            var column = await _columnService.UpdateColumnName(columnId, UpdateColumnName dto);
+
+            if(column == null)
+                return NotFound();
+            
+            return Ok(column);
+        }
+
+        [HttpDelete("{columnId}")]
+        public async Task<IActionResult> DeleteColumn(int columnId)
         {
             
         }
-        
     }
 }

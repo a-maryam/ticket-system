@@ -8,6 +8,6 @@ namespace ticket_system.Services
 {
     public class ColumnService
     {
-        
+
     }
 }
