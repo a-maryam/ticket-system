@@ -8,11 +8,11 @@ namespace ticket_system.Dtos
     {
         public required string Title { get; set; }
 
-        public required string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
-        public required int BoardId { get; set; }
+        public int BoardId { get; set; }
 
-        public required string ColumnName { get; set; }
+        public required int ColumnId { get; set; }
 
         public string? NewBoardName { get; set; }
 

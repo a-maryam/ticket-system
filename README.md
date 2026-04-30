@@ -28,9 +28,12 @@ In-progress ticketing web app with Jira-like functionality
 - wrote column model
 - adjusted ticket service for column 
 - adjusted board service for column
-- temporary workaround for columnid w name + board (fragile -- need to change to id, have to figure that out for default columns)
+- columnid in ticket flow fixed
 - started column service/controller
 - further todos: write comment service, move tickets between columns, rules for life cycle, move into UI
 
 ## Planned/Ideas
 - for UX, add a flow where a ticket can be created concurrently with ticket (had to remove option when adding column to flow)
+
+## Design thoughts
+- Initially tried a design with column name and board id to look up columns in ticket creation, but it would cause problems down the line. Changed to using columnid. 

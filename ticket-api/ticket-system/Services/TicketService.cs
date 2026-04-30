@@ -20,9 +20,7 @@ namespace ticket_system.Services
         // check that this is correct
         public async Task<TicketDto> CreateTicket(CreateTicketDto dto)
         {
-            var column = await _context.Columns.FirstOrDefaultAsync(c =>
-                c.BoardId == dto.BoardId && c.Name == dto.ColumnName
-            );
+            var column = await _context.Columns.FindAsync(dto.ColumnId);
 
             if (column == null)
                 throw new Exception("Column not found.");

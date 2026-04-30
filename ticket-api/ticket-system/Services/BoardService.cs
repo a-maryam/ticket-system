@@ -52,7 +52,7 @@ namespace ticket_system.Services
                         .Columns.OrderBy(c => c.Position)
                         .Select(c => new ColumnDto
                         {
-                            Id = c.Id,
+                            BoardId = c.Id,
                             Name = c.Name,
                             Tickets = c
                                 .Tickets.OrderBy(t => t.Position)
