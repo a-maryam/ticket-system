@@ -24,7 +24,7 @@ public class Ticket
 
     public int BoardId { get; set; }
 
-    public int Position { get; set; } // position within column
+    public int Position { get; set; } // position within column - vertical
 
     public required int ColumnId { get; set; }
 

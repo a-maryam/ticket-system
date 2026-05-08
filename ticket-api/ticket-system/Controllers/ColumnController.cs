@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ticket_system.Dtos;
 using ticket_system.Services;
 
-namespace ticket_system.Controllers
+/*namespace ticket_system.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -52,4 +52,4 @@ namespace ticket_system.Controllers
             
         }
     }
-}
+}*/
