@@ -49,13 +49,8 @@ namespace ticket_system.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTicket(int id)
         {
-            var deleted = await _ticketService.DeleteTicket(id);
-            if(!deleted)
-            {
-                return NotFound();
-            }
-
-            return Ok();
+            await _ticketService.DeleteTicket(id);
+            return NoContent();
         }
     }
 }

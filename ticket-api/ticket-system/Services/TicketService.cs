@@ -118,12 +118,20 @@ public class TicketService
         if (ticket == null)
             throw new Exception("Ticket not found.");
 
+        var columnId = ticket.ColumnId;
+        var deletedPosition = ticket.Position;
+
         _context.Tickets.Remove(ticket);
 
-        await _context.SaveChangesAsync();
+        var tickets = await _context
+            .Tickets.Where(t => t.ColumnId == columnId && t.Position > deletedPosition)
+            .ToListAsync();
 
-        // adjust ticket position logic
-        
+        foreach (var t in tickets)
+        {
+            t.Position--;
+        }
+
+        await _context.SaveChangesAsync();
     }
 }
-
