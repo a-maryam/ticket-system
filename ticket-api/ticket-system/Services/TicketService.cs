@@ -97,7 +97,7 @@ public class TicketService
         }
 
         ticket.Status = dto.Status;
-        _ = await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         return new TicketDto
         {
@@ -133,5 +133,30 @@ public class TicketService
         }
 
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<TicketDto> UpdateTicket(int ticketId, UpdateTicketDto dto)
+    {
+        var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticketId);
+        if (ticket == null)
+            throw new Exception("Ticket not found.");
+
+        if (dto.Title != null)
+            ticket.Title = dto.Title;
+        if (dto.Description != null)
+            ticket.Description = dto.Description;
+
+        await _context.SaveChangesAsync();
+
+        return new TicketDto
+        {
+            Id = ticket.Id,
+            Title = ticket.Title,
+            Description = ticket.Description,
+            ColumnId = ticket.ColumnId,
+            Status = ticket.Status,
+            CreatorId = ticket.CreatorId,
+            Position = ticket.Position,
+        };
     }
 }
