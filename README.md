@@ -29,7 +29,9 @@ In-progress ticketing web app with Jira-like functionality
 - adjusted ticket service for column 
 - adjusted board service for column
 - columnid in ticket flow fixed
-- started column service/controller, writing ticket delete
+- started column service/controller
+- wrote ticket delete, ticket update
+- in progress: column service
 - further todos: write comment service, move tickets between columns, rules for life cycle, move into UI
 
 ## Planned/Ideas

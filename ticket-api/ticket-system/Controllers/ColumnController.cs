@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ticket_system.Dtos;
 using ticket_system.Services;
 
-/*namespace ticket_system.Controllers
+namespace ticket_system.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -35,21 +35,22 @@ using ticket_system.Services;
             return Ok(columns);
         }
 
-        [HttpPut("/updatename/{columnId}")]
-        public async Task<IActionResult> UpdateColumnName(int columnId, UpdateColumnName dto)
+        [HttpPut("updatename/{columnId}")]
+        public async Task<IActionResult> UpdateColumnName(int columnId, UpdateColumnNameDto dto)
         {
-            var column = await _columnService.UpdateColumnName(columnId, UpdateColumnName dto);
+            var column = await _columnService.UpdateColumnName(columnId, dto);
 
-            if(column == null)
+            if (column == null)
                 return NotFound();
-            
+
             return Ok(column);
         }
 
         [HttpDelete("{columnId}")]
         public async Task<IActionResult> DeleteColumn(int columnId)
         {
-            
+            await _columnService.DeleteColumn(columnId);
+            return NoContent();
         }
     }
-}*/
+}
