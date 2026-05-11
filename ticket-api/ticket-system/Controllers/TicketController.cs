@@ -60,4 +60,11 @@ public class TicketController : ControllerBase
         var ticket = await _ticketService.UpdateTicket(id, dto);
         return Ok(ticket);
     }
+
+    [HttpPatch("{id}/move")]
+    public async Task<IActionResult> MoveTicket(int id, MoveTicketDto dto)
+    {
+        var ticket = await _ticketService.MoveTicket(id, dto);
+        return Ok(ticket);
+    }
 }

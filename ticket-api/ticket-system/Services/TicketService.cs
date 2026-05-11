@@ -23,7 +23,9 @@ public class TicketService
         var column = await _context.Columns.FindAsync(dto.ColumnId);
 
         if (column == null)
+        {
             throw new Exception("Column not found.");
+        }
 
         var position = await _context.Tickets.Where(t => t.ColumnId == column.Id).CountAsync();
 
@@ -61,9 +63,14 @@ public class TicketService
         var user = await _context.Users.FindAsync(dto.AssigneeId);
 
         if (ticket == null)
+        {
             throw new Exception("Ticket not found.");
+        }
+
         if (user == null)
+        {
             throw new Exception("User not found");
+        }
 
         ticket.AssigneeId = user.Id;
 
@@ -74,7 +81,9 @@ public class TicketService
     {
         var ticket = await _context.Tickets.FindAsync(id);
         if (ticket == null)
+        {
             return null;
+        }
 
         return new TicketDto
         {
@@ -116,7 +125,9 @@ public class TicketService
         var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticketId);
 
         if (ticket == null)
+        {
             throw new Exception("Ticket not found.");
+        }
 
         var columnId = ticket.ColumnId;
         var deletedPosition = ticket.Position;
@@ -139,15 +150,107 @@ public class TicketService
     {
         var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticketId);
         if (ticket == null)
+        {
             throw new Exception("Ticket not found.");
+        }
 
         if (dto.Title != null)
+        {
             ticket.Title = dto.Title;
+        }
+
         if (dto.Description != null)
+        {
             ticket.Description = dto.Description;
+        }
 
         await _context.SaveChangesAsync();
 
+        return new TicketDto
+        {
+            Id = ticket.Id,
+            Title = ticket.Title,
+            Description = ticket.Description,
+            ColumnId = ticket.ColumnId,
+            Status = ticket.Status,
+            CreatorId = ticket.CreatorId,
+            Position = ticket.Position,
+        };
+    }
+
+    public async Task<TicketDto> MoveTicket(int ticketId, MoveTicketDto dto)
+    {
+        var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticketId);
+        if (ticket == null)
+        {
+            throw new Exception("Ticket not found.");
+        }
+
+        // move
+        var boardId = dto.BoardId;
+        var columnId = dto.ColumnId;
+        var position = dto.Position;
+        // can always just move to new columnid...need board id so we rearrange that one
+        // have to reposition rest of column
+        // different board
+        //same board same column
+        // same board different column
+
+        if (boardId != ticket.BoardId)
+        { // case we have to move to new board
+            // have to make sure that other tickets are adjusted.
+            // need to adjust all tickets
+            var ticketsPreviousBoard = await _context
+                .Tickets.Where(t => t.ColumnId == ticket.ColumnId)
+                .OrderBy(t => t.Position)
+                .ToListAsync();
+
+            ticketsPreviousBoard.Remove(ticket);
+
+            for (int i = 0; i < ticketsPreviousBoard.Count; i++)
+            {
+                ticketsPreviousBoard[i].Position = i;
+            }
+
+            /*var column =
+                await _context.Columns.FindAsync(columnId)
+                ?? throw new Exception("Invalid target position");*/
+
+            var tickets = await _context
+                .Tickets.Where(t => t.ColumnId == columnId)
+                .OrderBy(t => t.Position)
+                .ToListAsync();
+
+            if (tickets.Count == 0)
+            {
+                if (position != 0)
+                {
+                    position = 0; // should come from my app so I probably don't need this
+                }
+
+                ticket.ColumnId = columnId;
+
+                tickets.Insert(position, ticket); // the board id and column id need to be adjusted i think
+            }
+
+            ticket.ColumnId = columnId;
+
+            tickets.Insert(position, ticket);
+
+            for (int i = 0; i < tickets.Count; i++)
+            {
+                tickets[i].Position = i;
+            }
+        }
+        else
+        {
+            var tickets = await _context
+                .Tickets.Where(t => t.ColumnId == columnId)
+                .OrderBy(t => t.Position)
+                .ToListAsync();
+        }
+
+        await _context.SaveChangesAsync();
         return new TicketDto
         {
             Id = ticket.Id,
