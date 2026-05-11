@@ -52,17 +52,21 @@ namespace ticket_system.Services
                         .Columns.OrderBy(c => c.Position)
                         .Select(c => new ColumnDto
                         {
-                            BoardId = c.Id,
+                            Id = c.Id,
+                            BoardId = b.Id,
                             Name = c.Name,
+                            Position = c.Position,
                             Tickets = c
                                 .Tickets.OrderBy(t => t.Position)
                                 .Select(t => new TicketDto
                                 {
                                     Id = t.Id,
                                     Title = t.Title,
+                                    Description = t.Description,
+                                    ColumnId = t.ColumnId,
+                                    Status = t.Status,
                                     CreatorId = t.CreatorId,
                                     Position = t.Position,
-                                    ColumnId = t.ColumnId,
                                 })
                                 .ToList(),
                         })
@@ -71,6 +75,16 @@ namespace ticket_system.Services
                 .FirstOrDefaultAsync();
 
             return board;
+        }
+
+        public async Task<List<BoardDto>> GetBoardsByOwner(int ownerId)
+        {
+            var boards = await _context
+                .Boards.Where(b => b.OwnerId == ownerId)
+                .Select(b => new BoardDto { Id = b.Id, Name = b.Name })
+                .ToListAsync();
+
+            return boards;
         }
     }
 }
