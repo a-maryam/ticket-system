@@ -186,68 +186,38 @@ public class TicketService
             throw new Exception("Ticket not found.");
         }
 
-        // move
-        var boardId = dto.BoardId;
-        var columnId = dto.ColumnId;
-        var position = dto.Position;
-        // can always just move to new columnid...need board id so we rearrange that one
-        // have to reposition rest of column
-        // different board
-        //same board same column
-        // same board different column
+        var sourceColumnId = ticket.ColumnId;
+        var sourceTickets = await _context
+            .Tickets.Where(t => t.ColumnId == sourceColumnId)
+            .OrderBy(t => t.Position)
+            .ToListAsync();
 
-        if (boardId != ticket.BoardId)
-        { // case we have to move to new board
-            // have to make sure that other tickets are adjusted.
-            // need to adjust all tickets
-            var ticketsPreviousBoard = await _context
-                .Tickets.Where(t => t.ColumnId == ticket.ColumnId)
-                .OrderBy(t => t.Position)
-                .ToListAsync();
+        sourceTickets.Remove(ticket);
 
-            ticketsPreviousBoard.Remove(ticket);
-
-            for (int i = 0; i < ticketsPreviousBoard.Count; i++)
-            {
-                ticketsPreviousBoard[i].Position = i;
-            }
-
-            /*var column =
-                await _context.Columns.FindAsync(columnId)
-                ?? throw new Exception("Invalid target position");*/
-
-            var tickets = await _context
-                .Tickets.Where(t => t.ColumnId == columnId)
-                .OrderBy(t => t.Position)
-                .ToListAsync();
-
-            if (tickets.Count == 0)
-            {
-                if (position != 0)
-                {
-                    position = 0; // should come from my app so I probably don't need this
-                }
-
-                ticket.ColumnId = columnId;
-
-                tickets.Insert(position, ticket); // the board id and column id need to be adjusted i think
-            }
-
-            ticket.ColumnId = columnId;
-
-            tickets.Insert(position, ticket);
-
-            for (int i = 0; i < tickets.Count; i++)
-            {
-                tickets[i].Position = i;
-            }
-        }
-        else
+        for (int i = 0; i < sourceTickets.Count; i++)
         {
-            var tickets = await _context
-                .Tickets.Where(t => t.ColumnId == columnId)
-                .OrderBy(t => t.Position)
-                .ToListAsync();
+            sourceTickets[i].Position = i;
+        }
+
+        var targetColumnId = dto.ColumnId;
+        var targetTickets = await _context
+            .Tickets.Where(t => t.ColumnId == targetColumnId)
+            .OrderBy(t => t.Position)
+            .ToListAsync();
+
+        if (dto.Position < 0)
+            dto.Position = 0;
+        if (dto.Position > targetTickets.Count)
+            dto.Position = targetTickets.Count;
+
+        ticket.ColumnId = targetColumnId;
+        ticket.BoardId = dto.BoardId;
+
+        targetTickets.Insert(dto.Position, ticket);
+
+        for (int i = 0; i < targetTickets.Count; i++)
+        {
+            targetTickets[i].Position = i;
         }
 
         await _context.SaveChangesAsync();
