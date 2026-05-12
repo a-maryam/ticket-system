@@ -5,12 +5,11 @@ using ticket_system.Services;
 // initialization: kestrel, logging, config
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
 builder.Services.AddScoped<ColumnService>();
-builder.Services.AddScoped<TicketService>(); // create ticket service whenever requested
+builder.Services.AddScoped<TicketService>();
 builder.Services.AddScoped<BoardService>();
 
-// Dependencies
 builder
     .Services.AddControllers()
     .AddJsonOptions(options =>
@@ -26,16 +25,28 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "ClientPolicy",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+        }
+    );
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipelineS.
+// Configure pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-// Middleware
 app.UseHttpsRedirection();
+
+app.UseCors("ClientPolicy");
 
 app.UseAuthorization();
 

@@ -8,7 +8,7 @@ In-progress ticketing web app with Jira-like functionality
 
 ## Tech
 - ASP.NET Core 10, C#, Entity Framework Core + Fluid API, MS SQL Server + Postman for Local Testing
-- Frontend: Likely React
+- Frontend: React, Vite, Javascript
 - Data: Either Azure SQL Database or Supabase dependent on host
 - Hosting: Between Railway, Vercel, and Azure 
 - Auth: Likely JWT Auth
@@ -31,11 +31,14 @@ In-progress ticketing web app with Jira-like functionality
 - columnid in ticket flow fixed
 - started column service/controller
 - wrote ticket delete, ticket update
-- in progress: column service
-- further todos: write comment service, move tickets between columns, rules for life cycle, move into UI
+- wrote column service
+- wrote move ticket
+- added get boards for owner
+- starting react + javascript app
 
 ## Planned/Ideas
 - for UX, add a flow where a ticket can be created concurrently with ticket (had to remove option when adding column to flow)
 
 ## Design thoughts
 - Initially tried a design with column name and board id to look up columns in ticket creation, but it would cause problems down the line. Changed to using columnid. 
+- Thought that I needed multiple cases for move ticket; actually, condensed into one. Sometimes it means there is extra repositioning, but it is worth the simpler design. There's also some room for optimization here in terms of how much we load.
