@@ -6,7 +6,7 @@ namespace ticket_system.Controllers;
 
 // add board not exists check
 [ApiController]
-[Route("[controller]")]
+[Route("api/tickets")]
 public class TicketController : ControllerBase
 {
     private readonly TicketService _ticketService;
@@ -34,10 +34,14 @@ public class TicketController : ControllerBase
     [HttpPut("{id}/assign")]
     public async Task<IActionResult> AssignTicket(int id, AssignTicketDto dto)
     {
-        await _ticketService.AssignTicket(id, dto);
+        var success = await _ticketService.AssignTicket(id, dto);
+
+        if (!success)
+            return NotFound();
+
         var ticket = await _ticketService.GetTicketById(id);
 
-        return ticket == null ? NotFound() : Ok(ticket);
+        return Ok(ticket);
     }
 
     [HttpPut("{id}/status")]

@@ -57,24 +57,21 @@ public class TicketService
         };
     }
 
-    public async Task AssignTicket(int ticketId, AssignTicketDto dto)
+    public async Task<bool> AssignTicket(int ticketId, AssignTicketDto dto)
     {
         var ticket = await _context.Tickets.FindAsync(ticketId);
         var user = await _context.Users.FindAsync(dto.AssigneeId);
 
-        if (ticket == null)
+        if (ticket == null || user == null)
         {
-            throw new Exception("Ticket not found.");
-        }
-
-        if (user == null)
-        {
-            throw new Exception("User not found");
+            return false;
         }
 
         ticket.AssigneeId = user.Id;
 
         await _context.SaveChangesAsync();
+
+        return true;
     }
 
     public async Task<TicketDto?> GetTicketById(int id)

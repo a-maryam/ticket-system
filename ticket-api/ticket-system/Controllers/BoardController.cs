@@ -5,7 +5,7 @@ using ticket_system.Services;
 namespace ticket_system.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/boards")]
     public class BoardController : ControllerBase
     {
         private readonly BoardService _boardService;
@@ -18,8 +18,15 @@ namespace ticket_system.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBoard(CreateBoardDto dto)
         {
-            var board = await _boardService.CreateBoard(dto);
-            return Ok(board);
+            try
+            {
+                var board = await _boardService.CreateBoard(dto);
+                return Ok(board);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
@@ -31,6 +38,14 @@ namespace ticket_system.Controllers
                 return NotFound();
 
             return Ok(board);
+        }
+
+        [HttpGet("owner/{ownerId}")]
+        public async Task<IActionResult> GetBoardsByOwner(int ownerId)
+        {
+            var boards = await _boardService.GetBoardsByOwner(ownerId);
+
+            return Ok(boards);
         }
     }
 }

@@ -5,7 +5,7 @@ using ticket_system.Services;
 namespace ticket_system.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/columns")]
     public class ColumnController : ControllerBase
     {
         private readonly ColumnService _columnService;
@@ -19,12 +19,11 @@ namespace ticket_system.Controllers
         public async Task<IActionResult> CreateColumn(CreateColumnDto dto)
         {
             var column = await _columnService.CreateColumn(dto);
-            if (column == null)
-                return NotFound();
+
             return Ok(column);
         }
 
-        [HttpGet("columns/{boardId}")]
+        [HttpGet("board/{boardId}")]
         public async Task<IActionResult> GetColumnsByBoard(int boardId)
         {
             var columns = await _columnService.GetColumnsByBoard(boardId);
@@ -35,7 +34,7 @@ namespace ticket_system.Controllers
             return Ok(columns);
         }
 
-        [HttpPut("updatename/{columnId}")]
+        [HttpPut("{columnId}/name")]
         public async Task<IActionResult> UpdateColumnName(int columnId, UpdateColumnNameDto dto)
         {
             var column = await _columnService.UpdateColumnName(columnId, dto);
@@ -46,10 +45,25 @@ namespace ticket_system.Controllers
             return Ok(column);
         }
 
+        [HttpPut("{columnId}/move/{newPosition}")]
+        public async Task<IActionResult> MoveColumn(int columnId, int newPosition)
+        {
+            var success = await _columnService.MoveColumn(columnId, newPosition);
+
+            if (!success)
+                return NotFound();
+
+            return NoContent();
+        }
+
         [HttpDelete("{columnId}")]
         public async Task<IActionResult> DeleteColumn(int columnId)
         {
-            await _columnService.DeleteColumn(columnId);
+            var success = await _columnService.DeleteColumn(columnId);
+
+            if (!success)
+                return NotFound();
+
             return NoContent();
         }
     }

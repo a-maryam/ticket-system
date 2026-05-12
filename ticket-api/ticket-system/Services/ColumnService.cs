@@ -106,12 +106,13 @@ public class ColumnService
         var boardId = column.BoardId;
 
         _context.Columns.Remove(column);
-        await _context.SaveChangesAsync();
 
         var columns = await _context
             .Columns.Where(c => c.BoardId == boardId)
             .OrderBy(c => c.Position)
             .ToListAsync();
+
+        columns.RemoveAll(c => c.Id == columnId);
 
         for (int i = 0; i < columns.Count; i++)
         {
