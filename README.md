@@ -6,6 +6,9 @@ In-progress ticketing web app with Jira-like functionality
 ## Demo: Ticket API in Postman 
 ![Ticket API](./demo_images/create_ticket_request.png)
 
+## Wireframe (Will be writing react components soon)
+![Basic UI Wireframe](./wireframe.png)
+
 ## Tech
 - ASP.NET Core 10, C#, Entity Framework Core + Fluid API, MS SQL Server + Postman for Local Testing
 - Frontend: React, Vite, Javascript
