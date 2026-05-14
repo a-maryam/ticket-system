@@ -43,6 +43,10 @@ In-progress ticketing web app with Jira-like functionality
 
 ## Planned/Ideas
 - for UX, add a flow where a ticket can be created concurrently with ticket (had to remove option when adding column to flow)
+- AI Board Summarizer 
+
+## UI considerations
+- 8px spacing standard is supposed to be good for web and mobile, so we'll go for that. I don't think we need the granularity of 4px
 
 ## Design thoughts
 - Initially tried a design with column name and board id to look up columns in ticket creation, but it would cause problems down the line. Changed to using columnid. 
