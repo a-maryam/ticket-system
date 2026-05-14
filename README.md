@@ -20,24 +20,26 @@ In-progress ticketing web app with Jira-like functionality
 - Wrote models for ticket, user, board, comment, with foreign keys
 - Wrote TicketController, Ticket Dto, AppDbContext
 - Added AppDbContextFactory so Entity Framework can connect with the MS SQL Server for local testing
-- create ticket api, controllers and service set up. 
-- fixed cascading deletes 
-- wrote board creation logic for creating new ticket (either existing board or new one)
-- wrote ticket + board dtos
-- added dummy user to appdbcontext for flow to work initially
-- assign ticket endpoint works
-- wrote get, create board, works in conjunction with create ticket + assign ticket
-- wrote change ticket status endpoint
-- wrote column model
-- adjusted ticket service for column 
-- adjusted board service for column
-- columnid in ticket flow fixed
-- started column service/controller
-- wrote ticket delete, ticket update
-- wrote column service
-- wrote move ticket
-- added get boards for owner
-- starting react + javascript app
+- Create ticket api, controllers and service set up. 
+- Fixed cascading deletes 
+- Wrote board creation logic for creating new ticket (either existing board or new one)
+- Wrote ticket + board dtos
+- Added dummy user to appdbcontext for flow to work initially
+- Assign ticket endpoint works
+- Wrote get, create board, works in conjunction with create ticket + assign ticket
+- Wrote change ticket status endpoint
+- Wrote column model
+- Adjusted ticket service for column 
+- Adjusted board service for column
+- Columnid in ticket flow fixed
+- Started column service/controller
+- Wrote ticket delete, ticket update
+- Wrote column service
+- Wrote move ticket
+- Added get boards for owner
+- Starting react + javascript app
+- Sketched UI
+- Working on React components
 
 ## Planned/Ideas
 - for UX, add a flow where a ticket can be created concurrently with ticket (had to remove option when adding column to flow)
